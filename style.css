@@ -1,0 +1,76 @@
+:root {
+    --board-font-size: 3dvh; /* controls the board square size via the em unit */
+}
+.container {
+	display: flex;
+	flex-flow: row nowrap;
+	justify-content: center;
+}
+.board {
+    display: flex;
+    flex-flow: column-reverse nowrap;
+    order: 1;
+    justify-content: center;
+	border: black solid 1px;
+}
+.points {
+    display: flex;
+    flex-flow: column-reverse nowrap;
+    order: 2;
+    justify-content: center;
+}
+.pointbutton {
+	display: flex;
+    align-items: center;
+    justify-content: center;
+	background-color: white;
+    width: 1.4em;
+    height: 1.4em;
+    font-size: 10dvmin;
+	border-radius: 0.5em;
+	cursor: pointer;
+}
+.boardrow {
+    display: flex;
+    flex-flow: row nowrap;
+    justify-content: center;
+    /* align-context: center; */
+}
+.multipleOfFive {
+	border: black solid 1px;
+}
+.scoresquare { 
+    background-color: grey;
+    width: 2em;
+    height: 2em;
+    font-size: var(--board-font-size);
+    font-family: Monospace;
+    line-height: 1;
+    text-align: center;
+    padding: 0px;
+	border: black solid 1px;
+}
+.boardsquare { 
+    background-color: white;
+    width: 2em;
+    height: 2em;
+    font-size: var(--board-font-size);
+    font-family: Monospace;
+    line-height: 1;
+    text-align: center;
+    padding: 0px;
+	border-radius: 1em;
+	border: 0px solid white;
+}
+
+.occupied {
+	background-color: lightblue;
+	cursor: pointer;
+}
+.lastupdate {
+	background-color: cyan;
+}
+.selected {
+	background-color: green;
+	border: black solid 1px;
+}
