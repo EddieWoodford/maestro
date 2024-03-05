@@ -10,6 +10,12 @@
 <body>
 
     <div class="container">
+		<div id="control" class="bigbuttons">
+			<button class="pointbutton" id="down" onclick="shiftboard(-1)">&#8595;</button>
+			<button class="pointbutton" id="up" onclick="shiftboard(1)">&#8593;</button>
+			<button class="pointbutton" id="undo" onclick="undo()">&#9100;</button>
+			<button class="pointbutton" id="eliminate" onclick="eliminate()">&#x2715;</button>
+		</div>
 		<div id="board" class="board">
 			<div class="boardrow" id="boardrow00">
 				<button class="scoresquare" id="square0000"></button>
@@ -381,15 +387,14 @@
 			</div>
 		</div>
 		
-		<div id="points" class="points">
-			<button class="pointbutton" id="undo" onclick="undo()">&#9100;</button>
-			<button class="pointbutton" id="eliminate" onclick="eliminate()">X</button>
+		<div id="points" class="bigbuttons">
 			<button class="pointbutton" id="point1" onclick="assignPoints(1)">1</button>
 			<button class="pointbutton" id="point2" onclick="assignPoints(2)">2</button>
 			<button class="pointbutton" id="point3" onclick="assignPoints(3)">3</button>
 			<button class="pointbutton" id="point4" onclick="assignPoints(4)">4</button>
 			<button class="pointbutton" id="point5" onclick="assignPoints(5)">5</button>
 		</div>
+		
    
     </div>
 </body>

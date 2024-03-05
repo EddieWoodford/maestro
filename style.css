@@ -1,45 +1,71 @@
 :root {
-    --board-font-size: 3dvh; /* controls the board square size via the em unit */
+	--board-font-size: calc(49dvmin / 16);
+	--pointbutton-font-size: calc(66dvmin / 5);
+    /* --board-font-size: 3dvh; /* controls the board square size via the em unit */ */
+}
+body {
+	margin: 0px;
+	padding: 0px;
+	background-color: black;
 }
 .container {
+	margin: 0px;
+	padding: 0px;
 	display: flex;
 	flex-flow: row nowrap;
 	justify-content: center;
 }
 .board {
+	margin: 0px;
+	padding: 0px;
     display: flex;
     flex-flow: column-reverse nowrap;
-    order: 1;
     justify-content: center;
-	border: black solid 1px;
+	border: white solid 1px;
+	order: 2;
 }
-.points {
+.bigbuttons {
+	margin: 0px;
+	padding: 0px;
     display: flex;
     flex-flow: column-reverse nowrap;
-    order: 2;
-    justify-content: center;
+    justify-content: space-evenly;
+}
+#control {
+	order: 1;
+}
+#points {
+	order: 3;
 }
 .pointbutton {
+	margin: 0px;
+	padding: 0px;
 	display: flex;
     align-items: center;
     justify-content: center;
-	background-color: white;
-    width: 1.4em;
-    height: 1.4em;
-    font-size: 10dvmin;
+	background-color: black;
+	color: white;
+    width: 1.5em;
+    height: 1.5em;
+    font-size: var(--pointbutton-font-size);
 	border-radius: 0.5em;
 	cursor: pointer;
+	border: white solid 1px;
 }
 .boardrow {
+	margin: 0px;
+	padding: 0px;
     display: flex;
     flex-flow: row nowrap;
     justify-content: center;
     /* align-context: center; */
 }
 .multipleOfFive {
-	border: black solid 1px;
+	border: white solid 1px;
 }
 .scoresquare { 
+	margin: 0px;
+	padding: 0px;
     background-color: grey;
     width: 2em;
     height: 2em;
@@ -51,7 +77,9 @@
 	border: black solid 1px;
 }
 .boardsquare { 
-    background-color: white;
+	margin: 0px;
+	padding: 0px;
+    background-color: black;
     width: 2em;
     height: 2em;
     font-size: var(--board-font-size);
@@ -67,10 +95,29 @@
 	background-color: lightblue;
 	cursor: pointer;
 }
+.eliminated {
+	background-color: grey;
+	text-decoration: line-through;
+}
 .lastupdate {
 	background-color: cyan;
 }
 .selected {
 	background-color: green;
 	border: black solid 1px;
+}
+
+@media all and (max-aspect-ratio: 1) { /* Tall screens */
+    /* put everything in one big column */
+    :root {
+        --board-font-size: calc(49dvmin / 21);
+		--pointbutton-font-size: calc(66dvmin / 7);
+    }
+    .container {
+        flex-flow: column nowrap;
+        align-items: stretch;
+    }
+	.bigbuttons {
+		flex-flow: row nowrap;
+	}
 }

@@ -24,23 +24,50 @@ class Square {
 
 function selectPlayer(buttonID) {
 	let [r,c] = buttonID2coords(buttonID);
+	if (!BOARD[r][c].occupied) {
+		return
+	}
+	let currentPoints = POINTS[POINTS.length-1];
+	
+	for (ci=1; ci<=20; ci++) {
+		if (SELECTED[ci] && currentPoints[ci] < 0) {
+			// an eliminated player is already selected, so must be preparing to return a player from elimination
+			// therefore, can't select non-eliminated players
+			if (POINTS[POINTS.length-1][c] >= 0) {
+				window.alert("Can't select eliminated and non-eliminated players simultaneously.");
+				return
+			}
+			break
+		}
+		if (SELECTED[ci] && currentPoints[ci] >= 0) {
+			// a non-eliminated player is already selected, so must be preparing to assign points or eliminate
+			// therefore, can't select eliminated players
+			if (POINTS[POINTS.length-1][c] < 0) {
+				window.alert("Can't select eliminated and non-eliminated players simultaneously.");
+				return
+			}
+			break
+		}
+	}
 	
 	if (BOARD[r][c].occupied) {
 		if (SELECTED[c]==1) {
 			SELECTED[c] = 0;
-			BOARD[r][c].button.classList.remove("selected");
 		} else {
 			SELECTED[c] = 1
-			BOARD[r][c].button.classList.add("selected");
 		}
-	}	
+	}
+	drawBoard();
 }
 
 function assignPoints(n) {
 	let newPoints = [...POINTS[POINTS.length-1]];
-	
 	for (c=1; c<=20; c++) {
 		if (SELECTED[c] == 1) {
+			if (newPoints[c] < 0) {
+				window.alert("Can't assign points to elimiated players");
+				return
+			}
 			newPoints[c] = newPoints[c] + n;
 			SELECTED[c] = 0;
 			LASTUPDATE[c] = 1;
@@ -54,19 +81,35 @@ function assignPoints(n) {
 }
 
 function eliminate() {
+	// toggle elimination status
+	// eliminated players have the negative of the points they had when eliminated, so that if they are returned to play
+	// their old score is resumed
+	let newPoints = [...POINTS[POINTS.length-1]];
 	for (c=1; c<=20; c++) {
+		LASTUPDATE[c] = 0;
 		if (SELECTED[c] == 1) {
-			POINTS[POINTS.length-1][c] = 1000;
+			if (newPoints[c] == 0) {
+				// eliminated with 0 points - player doesn't exist
+				newPoints[c] = 1000;
+			} else {
+				// existing player who was eliminated
+				newPoints[c] = -newPoints[c];
+			}
 			SELECTED[c] = 0;
 		}
 	}
+	POINTS.push(newPoints);
 	saveGame();
 	drawBoard();
+
 }
 
 function undo() {
-	POINTS.pop();
+	if (POINTS.length > 1) {
+		POINTS.pop();
+	}
 	LASTUPDATE = Array(21).fill(0);
+	SELECTED = Array(21).fill(0);
 	saveGame();
 	drawBoard();
 }
@@ -91,15 +134,22 @@ function restoreGame() {
 	}
 }
 
+function shiftboard(n) {
+	MINPOINT = MINPOINT + n;
+	if (MINPOINT < 0) {
+		MINPOINT = 0;
+	}
+	drawBoard();
+}
+
 function drawBoard() {
 	let currentPoints = [...POINTS[POINTS.length-1]];
-	let minPoint = Math.min(...currentPoints);
-	FIRSTROWPOINT = minPoint - minPoint % 5;
+	
+	// write numbers in points column & borders at multiples of 5
 	for (let r = 0; r <= 15; r++) {
-		// write numbers in points column
-		let pointValue = FIRSTROWPOINT + r
+		let pointValue = MINPOINT + r;
 		let id = "square" + String(r).padStart(2,'0') + "00";
-		el = document.getElementById(id);
+		let el = document.getElementById(id);
 		el.innerText = pointValue;
 		
 		// borders at multiples of 5
@@ -111,23 +161,47 @@ function drawBoard() {
 			el.classList.remove("multipleOfFive");
 		}
 	}
+	
+	// format board
+	let elimButton = document.getElementById("eliminate");
+	elimButton.innerHTML = "&#x2715;"; // draw cross
 	for (c=1; c<=20; c++) {	
 		for (let r = 0; r <= 15; r++) {
-			BOARD[r][c].button.classList.remove("selected")
-			BOARD[r][c].button.classList.remove("occupied")
-			BOARD[r][c].button.classList.remove("lastupdate")
+			BOARD[r][c].button.classList.remove("selected");
+			BOARD[r][c].button.classList.remove("occupied");
+			BOARD[r][c].button.classList.remove("lastupdate");
+			BOARD[r][c].button.classList.remove("eliminated");
 			BOARD[r][c].occupied = false;
 			BOARD[r][c].button.innerText = "";
-			if (r + FIRSTROWPOINT == POINTS[POINTS.length-1][c]) {
+			// non-eliminated players:
+			if (MINPOINT + r == currentPoints[c]) {
 				BOARD[r][c].button.classList.add("occupied")
 				BOARD[r][c].occupied = true;
 				BOARD[r][c].button.innerText = c;
+				if (SELECTED[c] == 1) {
+					BOARD[r][c].button.classList.add("selected");
+				}
+				if (LASTUPDATE[c] == 1) {
+					BOARD[r][c].button.classList.add("lastupdate")
+				}
+			}
+			// eliminated players:
+			if (currentPoints[c] < 0 && MINPOINT + r == -currentPoints[c]) {
+				BOARD[r][c].button.classList.add("occupied")
+				BOARD[r][c].button.classList.add("eliminated")
+				BOARD[r][c].occupied = true;
+				BOARD[r][c].button.innerText = c;
+				if (SELECTED[c] == 1) {
+					BOARD[r][c].button.classList.add("selected");
+					elimButton.innerHTML = "&#x2713;"; // draw tick
+				}
 				if (LASTUPDATE[c] == 1) {
 					BOARD[r][c].button.classList.add("lastupdate")
 				}
 			}
 		}
 	}
+	
 }
 
 function setup() {
@@ -164,7 +238,7 @@ let BOARD = [];
 let SELECTED = Array(21).fill(0);
 let LASTUPDATE = Array(21).fill(0);
 let POINTS;
-let FIRSTROWPOINT = 0;
+let MINPOINT = 0;
 window.onload = setup;
 
 
