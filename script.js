@@ -29,7 +29,7 @@ function selectPlayer(buttonID) {
 	}
 	let currentPoints = POINTS[POINTS.length-1];
 	
-	for (ci=1; ci<=20; ci++) {
+	for (ci=1; ci<=NPLAYERS; ci++) {
 		if (SELECTED[ci] && currentPoints[ci] < 0) {
 			// an eliminated player is already selected, so must be preparing to return a player from elimination
 			// therefore, can't select non-eliminated players
@@ -62,7 +62,7 @@ function selectPlayer(buttonID) {
 
 function assignPoints(n) {
 	let newPoints = [...POINTS[POINTS.length-1]];
-	for (c=1; c<=20; c++) {
+	for (c=1; c<=NPLAYERS; c++) {
 		if (SELECTED[c] == 1) {
 			if (newPoints[c] < 0) {
 				window.alert("Can't assign points to elimiated players");
@@ -85,7 +85,7 @@ function eliminate() {
 	// eliminated players have the negative of the points they had when eliminated, so that if they are returned to play
 	// their old score is resumed
 	let newPoints = [...POINTS[POINTS.length-1]];
-	for (c=1; c<=20; c++) {
+	for (c=1; c<=NPLAYERS; c++) {
 		LASTUPDATE[c] = 0;
 		if (SELECTED[c] == 1) {
 			if (newPoints[c] == 0) {
@@ -165,7 +165,7 @@ function drawBoard() {
 	// format board
 	let elimButton = document.getElementById("eliminate");
 	elimButton.innerHTML = "&#x2715;"; // draw cross
-	for (c=1; c<=20; c++) {	
+	for (c=1; c<=NPLAYERS; c++) {	
 		for (let r = 0; r <= 15; r++) {
 			BOARD[r][c].button.classList.remove("selected");
 			BOARD[r][c].button.classList.remove("occupied");
@@ -208,7 +208,7 @@ function setup() {
 	// Create the square objects
 	for (let r = 0; r <= 15; r++) {
 		let thisrow = [];
-		for ( let c = 1; c <= 20; c++) {
+		for ( let c = 1; c <= NPLAYERS; c++) {
 			let id = "square" + String(r).padStart(2,'0') + String(c).padStart(2,'0')
 			let square = new Square(r, c, id);
 			
@@ -239,6 +239,7 @@ let SELECTED = Array(21).fill(0);
 let LASTUPDATE = Array(21).fill(0);
 let POINTS;
 let MINPOINT = 0;
+let NPLAYERS = 16;
 window.onload = setup;
 
 

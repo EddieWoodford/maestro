@@ -22,7 +22,7 @@ body {
     flex-flow: column-reverse nowrap;
     justify-content: center;
 	border: white solid 1px;
-	order: 2;
+	order: 3;
 }
 .bigbuttons {
 	margin: 0px;
@@ -35,7 +35,7 @@ body {
 	order: 1;
 }
 #points {
-	order: 3;
+	order: 4;
 }
 .pointbutton {
 	margin: 0px;
@@ -110,7 +110,7 @@ body {
 @media all and (max-aspect-ratio: 1) { /* Tall screens */
     /* put everything in one big column */
     :root {
-        --board-font-size: calc(49dvmin / 21);
+        --board-font-size: calc(49dvmin / 17);
 		--pointbutton-font-size: calc(66dvmin / 7);
     }
     .container {
@@ -119,5 +119,8 @@ body {
     }
 	.bigbuttons {
 		flex-flow: row nowrap;
+	}
+	#points {
+		order: 2;
 	}
 }
