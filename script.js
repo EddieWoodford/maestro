@@ -70,9 +70,6 @@ function assignPoints(n) {
 			}
 			newPoints[c] = newPoints[c] + n;
 			SELECTED[c] = 0;
-			LASTUPDATE[c] = 1;
-		} else {
-			LASTUPDATE[c] = 0;
 		}
 	}
 	POINTS.push(newPoints);
@@ -86,7 +83,6 @@ function eliminate() {
 	// their old score is resumed
 	let newPoints = [...POINTS[POINTS.length-1]];
 	for (c=1; c<=NPLAYERS; c++) {
-		LASTUPDATE[c] = 0;
 		if (SELECTED[c] == 1) {
 			if (newPoints[c] == 0) {
 				// eliminated with 0 points - player doesn't exist
@@ -108,7 +104,6 @@ function undo() {
 	if (POINTS.length > 1) {
 		POINTS.pop();
 	}
-	LASTUPDATE = Array(21).fill(0);
 	SELECTED = Array(21).fill(0);
 	saveGame();
 	drawBoard();
@@ -142,8 +137,15 @@ function shiftboard(n) {
 	drawBoard();
 }
 
+
 function drawBoard() {
 	let currentPoints = [...POINTS[POINTS.length-1]];
+	if (POINTS.length > 1) {
+		let prevPoints = [...POINTS[POINTS.length-2]];
+		lastChange = currentPoints.map((value,i) => value - prevPoints[i]);
+	} else {
+		lastChange = Array(16).fill(0);
+	}
 	
 	// write numbers in points column & borders at multiples of 5
 	for (let r = 0; r <= 15; r++) {
@@ -181,7 +183,7 @@ function drawBoard() {
 				if (SELECTED[c] == 1) {
 					BOARD[r][c].button.classList.add("selected");
 				}
-				if (LASTUPDATE[c] == 1) {
+				if (lastChange[c] > 0) {
 					BOARD[r][c].button.classList.add("lastupdate")
 				}
 			}
@@ -195,7 +197,7 @@ function drawBoard() {
 					BOARD[r][c].button.classList.add("selected");
 					elimButton.innerHTML = "&#x2713;"; // draw tick
 				}
-				if (LASTUPDATE[c] == 1) {
+				if (lastChange[c] > 0) {
 					BOARD[r][c].button.classList.add("lastupdate")
 				}
 			}
@@ -235,8 +237,7 @@ function buttonID2coords(buttonID) {
 
 
 let BOARD = [];
-let SELECTED = Array(21).fill(0);
-let LASTUPDATE = Array(21).fill(0);
+let SELECTED = Array(16).fill(0);
 let POINTS;
 let MINPOINT = 0;
 let NPLAYERS = 16;
