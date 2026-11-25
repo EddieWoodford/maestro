@@ -204,7 +204,45 @@ function drawBoard() {
 		}
 	}
 	
+	updateRoundSummary()
+	
 }
+
+function updateRoundSummary() {
+    const summaryDiv = document.getElementById("roundSummary");
+
+    if (POINTS.length <= 1) {
+        summaryDiv.innerHTML = "";
+        return;
+    }
+
+    const roundNumber = POINTS.length - 1;
+    const currentPoints = POINTS[POINTS.length - 1];
+    const prevPoints = POINTS[POINTS.length - 2];
+
+    let lines = [];
+
+    for (let c = 1; c <= NPLAYERS; c++) {
+        if (currentPoints[c] !== prevPoints[c]) {
+            let displayScore = currentPoints[c] < 0 
+                ? -currentPoints[c] + " (eliminated)"
+                : currentPoints[c];
+
+            lines.push(`Player ${c} ⇒ ${displayScore}`);
+        }
+    }
+
+    if (lines.length === 0) {
+        summaryDiv.innerHTML = "";
+        return;
+    }
+
+    summaryDiv.innerHTML = `
+        <strong>Round ${roundNumber}:</strong><br>
+        ${lines.join("<br>")}
+    `;
+}
+
 
 function setup() {
 	// Create the square objects
